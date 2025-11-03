@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldTime - Global Time Zones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffcc00;
+            --danger: #dc3545;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #3d9a35;
+            transform: scale(1.05);
+        }
+
+        .btn-youtube {
+            background: #FF0000;
+            color: white;
+        }
+
+        .btn-youtube:hover {
+            background: #CC0000;
+            transform: scale(1.05);
+        }
+
+        .btn-settings {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-settings:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .time-display {
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .date-display {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .location-display {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .clock-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .analog-clock {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 10px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .clock-center {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .hour-hand, .minute-hand, .second-hand {
+            position: absolute;
+            transform-origin: bottom center;
+            border-radius: 10px;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .hour-hand {
+            width: 8px;
+            height: 70px;
+            background: var(--light);
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 6px;
+            height: 90px;
+            background: var(--accent);
+            z-index: 2;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 100px;
+            background: var(--danger);
+            z-index: 1;
+        }
+
+        .clock-mark {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 2px;
+        }
+
+        .clock-mark-hour {
+            width: 4px;
+            height: 20px;
+        }
+
+        .clock-mark-minute {
+            width: 2px;
+            height: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .other-cities {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .city-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .city-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .city-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .city-time {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .settings-content {
+            background: rgba(30, 30, 40, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .time-display {
+                font-size: 2.5rem;
+            }
+            
+            .location-display {
+                font-size: 1.4rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .flex-center {
+                flex-direction: column;
+            }
+            
+            .analog-clock {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Settings Button -->
+        <button id="settings-btn" class="btn-settings">
+            <i class="fas fa-cog"></i>
+        </button>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="settings-modal hidden">
+            <div class="settings-content card">
+                <div class="settings-header">
+                    <h2 id="settings-title">Settings</h2>
+                    <button id="close-settings" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="language-select" id="language-label">Language</label>
+                    <select id="language-select">
+                        <option value="en">English</option>
+                        <option value="tr">Türkçe</option>
+                    </select>
+                </div>
+                <div class="flex-center">
+                    <button id="save-settings" class="btn btn-success">
+                        <i class="fas fa-save"></i> <span id="save-text">Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permission Screen -->
+        <div id="permission-screen" class="card">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <h1 id="app-title">WorldTime</h1>
+                <p class="subtitle" id="app-subtitle">Accurate time information worldwide</p>
+            </div>
+            
+            <div class="card">
+                <h2 style="text-align: center; margin-bottom: 20px;" id="permission-title">Location Access</h2>
+                <p style="text-align: center; margin-bottom: 30px; line-height: 1.6;" id="permission-text">
+                    WorldTime would like to access your location to show you the most accurate local time information. 
+                    This information will only be used for time calculations and will not be stored in any way.
+                </p>
+                
+                <div class="flex-center">
+                    <button id="allow-btn" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i> <span id="allow-text">Yes, Access Location</span>
+                    </button>
+                    <button id="deny-btn" class="btn btn-secondary">
+                        <i class="fas fa-times-circle"></i> <span id="deny-text">No, Manual Entry</span>
+                    </button>
+                </div>
+                
+                <div class="flex-center" style="margin-top: 20px;">
+                    <button id="youtube-btn" class="btn btn-youtube">
+                        <i class="fab fa-youtube"></i> <span id="youtube-text">Subscribe to My YouTube Channel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Screen -->
+        <div id="main-screen" class="hidden">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <h1 id="main-title">WorldTime</h1>
+                <p class="subtitle" id="main-subtitle">Real-time world clocks</p>
+            </div>
+            
+            <div class="card">
+                <div class="location-display">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="location-text">Loading your location...</span>
+                </div>
+                
+                <div class="date-display" id="date-text">Loading date...</div>
+                
+                <div class="time-display" id="time-text">00:00:00</div>
+                
+                <div class="clock-container">
+                    <div class="analog-clock" id="analog-clock">
+                        <!-- Analog clock marks and hands will be added by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="flex-center">
+                    <button id="change-location-btn" class="btn btn-secondary">
+                        <i class="fas fa-map-marked-alt"></i> <span id="change-location-text">Change Location</span>
+                    </button>
+                    <button id="refresh-btn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> <span id="refresh-text">Refresh</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 style="text-align: center; margin-bottom: 20px;" id="other-cities-title">Other Cities</h2>
+                <div class="other-cities" id="other-cities">
+                    <!-- Other cities will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Location Screen -->
+        <div id="manual-location-screen" class="card hidden">
+            <div class="header">
+                <h2 id="manual-title">Select Your Location</h2>
+                <p class="subtitle" id="manual-subtitle">Please select the location for which you want to see the time</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="country-select" id="country-label">Country</label>
+                <select id="country-select">
+                    <option value="">Select a country</option>
+                    <!-- Countries will be populated by JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="city-select" id="city-label">City</label>
+                <select id="city-select">
+                    <option value="">Select a country first</option>
+                </select>
+            </div>
+            
+            <div class="flex-center">
+                <button id="save-location-btn" class="btn btn-success">
+                    <i class="fas fa-save"></i> <span id="save-location-text">Save Location</span>
+                </button>
+                <button id="cancel-btn" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> <span id="cancel-text">Go Back</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Error Screen -->
+        <div id="error-screen" class="card hidden">
+            <div class="error-container">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2 id="error-title">Location Access Denied</h2>
+                <p style="margin: 20px 0; line-height: 1.6;" id="error-text">
+                    You have not granted permission to access location information. Therefore, we cannot show your local time information.
+                    Please grant access to your location manually or select your location manually.
+                </p>
+                
+                <div class="flex-center">
+                    <button id="retry-btn" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> <span id="retry-text">Try Again</span>
+                    </button>
+                    <button id="manual-setup-btn" class="btn btn-success">
+                        <i class="fas fa-cogs"></i> <span id="manual-setup-text">Set Up Manually</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p id="footer-text">WorldTime &copy; 2025 - All rights reserved</p>
+    </div>
+
+    <script>
+        // DOM Elements
+        const permissionScreen = document.getElementById('permission-screen');
+        const mainScreen = document.getElementById('main-screen');
+        const manualLocationScreen = document.getElementById('manual-location-screen');
+        const errorScreen = document.getElementById('error-screen');
+        const settingsModal = document.getElementById('settings-modal');
+        
+        const settingsBtn = document.getElementById('settings-btn');
+        const closeSettings = document.getElementById('close-settings');
+        const saveSettings = document.getElementById('save-settings');
+        const languageSelect = document.getElementById('language-select');
+        
+        const allowBtn = document.getElementById('allow-btn');
+        const denyBtn = document.getElementById('deny-btn');
+        const changeLocationBtn = document.getElementById('change-location-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const saveLocationBtn = document.getElementById('save-location-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const manualSetupBtn = document.getElementById('manual-setup-btn');
+        const youtubeBtn = document.getElementById('youtube-btn');
+        
+        const locationText = document.getElementById('location-text');
+        const dateText = document.getElementById('date-text');
+        const timeText = document.getElementById('time-text');
+        const analogClock = document.getElementById('analog-clock');
+        const otherCities = document.getElementById('other-cities');
+        const countrySelect = document.getElementById('country-select');
+        const citySelect = document.getElementById('city-select');
+        
+        // Language texts
+        const translations = {
+            en: {
+                appTitle: "WorldTime",
+                appSubtitle: "Accurate time information worldwide",
+                permissionTitle: "Location Access",
+                permissionText: "WorldTime would like to access your location to show you the most accurate local time information. This information will only be used for time calculations and will not be stored in any way.",
+                allowText: "Yes, Access Location",
+                denyText: "No, Manual Entry",
+                youtubeText: "Subscribe to My YouTube Channel",
+                mainTitle: "WorldTime",
+                mainSubtitle: "Real-time world clocks",
+                locationLoading: "Loading your location...",
+                dateLoading: "Loading date...",
+                changeLocationText: "Change Location",
+                refreshText: "Refresh",
+                otherCitiesTitle: "Other Cities",
+                manualTitle: "Select Your Location",
+                manualSubtitle: "Please select the location for which you want to see the time",
+                countryLabel: "Country",
+                cityLabel: "City",
+                selectCountry: "Select a country",
+                selectCity: "Select a city",
+                selectCountryFirst: "Select a country first",
+                saveLocationText: "Save Location",
+                cancelText: "Go Back",
+                errorTitle: "Location Access Denied",
+                errorText: "You have not granted permission to access location information. Therefore, we cannot show your local time information. Please grant access to your location manually or select your location manually.",
+                retryText: "Try Again",
+                manualSetupText: "Set Up Manually",
+                footerText: "WorldTime &copy; 2025 - All rights reserved",
+                settingsTitle: "Settings",
+                languageLabel: "Language",
+                saveText: "Save"
+            },
+            tr: {
+                appTitle: "WorldTime",
+                appSubtitle: "Dünya genelinde doğru saat bilgisi",
+                permissionTitle: "Konum Erişimi",
+                permissionText: "WorldTime, size en doğru yerel saat bilgisini gösterebilmek için konumunuza erişmek istiyor. Bu bilgi yalnızca saat hesaplamaları için kullanılacak ve hiçbir şekilde kaydedilmeyecektir.",
+                allowText: "Evet, Konuma Eriş",
+                denyText: "Hayır, Manuel Giriş",
+                youtubeText: "YouTube Kanalıma Abone Ol",
+                mainTitle: "WorldTime",
+                mainSubtitle: "Gerçek zamanlı dünya saatleri",
+                locationLoading: "Konumunuz yükleniyor...",
+                dateLoading: "Tarih yükleniyor...",
+                changeLocationText: "Konumu Değiştir",
+                refreshText: "Yenile",
+                otherCitiesTitle: "Diğer Şehirler",
+                manualTitle: "Konumunuzu Seçin",
+                manualSubtitle: "Lütfen saat bilgisini görmek istediğiniz konumu seçin",
+                countryLabel: "Ülke",
+                cityLabel: "Şehir",
+                selectCountry: "Bir ülke seçin",
+                selectCity: "Bir şehir seçin",
+                selectCountryFirst: "Önce ülke seçin",
+                saveLocationText: "Konumu Kaydet",
+                cancelText: "Geri Dön",
+                errorTitle: "Konum Erişimi Reddedildi",
+                errorText: "Konum bilgisine erişim izni vermediniz. Bu nedenle, yerel saat bilginizi gösteremiyoruz. Lütfen konumunuza manuel olarak erişim izni verin veya manuel olarak konumunuzu seçin.",
+                retryText: "Tekrar Dene",
+                manualSetupText: "Manuel Olarak Ayarla",
+                footerText: "WorldTime &copy; 2025 - Tüm hakları saklıdır",
+                settingsTitle: "Ayarlar",
+                languageLabel: "Dil",
+                saveText: "Kaydet"
+            }
+        };
+
+        // Current language
+        let currentLanguage = 'en';
+
+        // Apply translations
+        function applyTranslations(lang) {
+            const texts = translations[lang];
+            document.getElementById('app-title').textContent = texts.appTitle;
+            document.getElementById('app-subtitle').textContent = texts.appSubtitle;
+            document.getElementById('permission-title').textContent = texts.permissionTitle;
+            document.getElementById('permission-text').textContent = texts.permissionText;
+            document.getElementById('allow-text').textContent = texts.allowText;
+            document.getElementById('deny-text').textContent = texts.denyText;
+            document.getElementById('youtube-text').textContent = texts.youtubeText;
+            document.getElementById('main-title').textContent = texts.mainTitle;
+            document.getElementById('main-subtitle').textContent = texts.mainSubtitle;
+            document.getElementById('location-text').textContent = texts.locationLoading;
+            document.getElementById('date-text').textContent = texts.dateLoading;
+            document.getElementById('change-location-text').textContent = texts.changeLocationText;
+            document.getElementById('refresh-text').textContent = texts.refreshText;
+            document.getElementById('other-cities-title').textContent = texts.otherCitiesTitle;
+            document.getElementById('manual-title').textContent = texts.manualTitle;
+            document.getElementById('manual-subtitle').textContent = texts.manualSubtitle;
+            document.getElementById('country-label').textContent = texts.countryLabel;
+            document.getElementById('city-label').textContent = texts.cityLabel;
+            document.getElementById('country-select').querySelector('option').textContent = texts.selectCountry;
+            document.getElementById('city-select').querySelector('option').textContent = texts.selectCountryFirst;
+            document.getElementById('save-location-text').textContent = texts.saveLocationText;
+            document.getElementById('cancel-text').textContent = texts.cancelText;
+            document.getElementById('error-title').textContent = texts.errorTitle;
+            document.getElementById('error-text').textContent = texts.errorText;
+            document.getElementById('retry-text').textContent = texts.retryText;
+            document.getElementById('manual-setup-text').textContent = texts.manualSetupText;
+            document.getElementById('footer-text').textContent = texts.footerText;
+            document.getElementById('settings-title').textContent = texts.settingsTitle;
+            document.getElementById('language-label').textContent = texts.languageLabel;
+            document.getElementById('save-text').textContent = texts.saveText;
+        }
+
+        // Settings functionality
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+        });
+
+        closeSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.add('hidden');
+            }
+        });
+
+        // Save settings
+        saveSettings.addEventListener('click', () => {
+            currentLanguage = languageSelect.value;
+            localStorage.setItem('worldTimeLanguage', currentLanguage);
+            applyTranslations(currentLanguage);
+            settingsModal.classList.add('hidden');
+            updateTime();
+        });
+
+        // Load language preference from localStorage if available
+        if (localStorage.getItem('worldTimeLanguage')) {
+            currentLanguage = localStorage.getItem('worldTimeLanguage');
+            languageSelect.value = currentLanguage;
+        }
+        applyTranslations(currentLanguage);
+
+        // City data for all countries (simplified for example)
+        const citiesData = {
+            'US': { 
+                name: 'United States', 
+                cities: [
+                    { name: 'New York', timezone: 'America/New_York' },
+                    { name: 'Los Angeles', timezone: 'America/Los_Angeles' },
+                    { name: 'Chicago', timezone: 'America/Chicago' },
+                    { name: 'Houston', timezone: 'America/Chicago' },
+                    { name: 'Phoenix', timezone: 'America/Phoenix' }
+                ] 
+            },
+            'GB': { 
+                name: 'United Kingdom', 
+                cities: [
+                    { name: 'London', timezone: 'Europe/London' },
+                    { name: 'Manchester', timezone: 'Europe/London' },
+                    { name: 'Birmingham', timezone: 'Europe/London' },
+                    { name: 'Liverpool', timezone: 'Europe/London' },
+                    { name: 'Glasgow', timezone: 'Europe/London' }
+                ] 
+            },
+            'DE': { 
+                name: 'Germany', 
+                cities: [
+                    { name: 'Berlin', timezone: 'Europe/Berlin' },
+                    { name: 'Hamburg', timezone: 'Europe/Berlin' },
+                    { name: 'Munich', timezone: 'Europe/Berlin' },
+                    { name: 'Cologne', timezone: 'Europe/Berlin' },
+                    { name: 'Frankfurt', timezone: 'Europe/Berlin' }
+                ] 
+            },
+            'FR': { 
+                name: 'France', 
+                cities: [
+                    { name: 'Paris', timezone: 'Europe/Paris' },
+                    { name: 'Marseille', timezone: 'Europe/Paris' },
+                    { name: 'Lyon', timezone: 'Europe/Paris' },
+                    { name: 'Toulouse', timezone: 'Europe/Paris' },
+                    { name: 'Nice', timezone: 'Europe/Paris' }
+                ] 
+            },
+            'IT': { 
+                name: 'Italy', 
+                cities: [
+                    { name: 'Rome', timezone: 'Europe/Rome' },
+                    { name: 'Milan', timezone: 'Europe/Rome' },
+                    { name: 'Naples', timezone: 'Europe/Rome' },
+                    { name: 'Turin', timezone: 'Europe/Rome' },
+                    { name: 'Palermo', timezone: 'Europe/Rome' }
+                ] 
+            },
+            'ES': { 
+                name: 'Spain', 
+                cities: [
+                    { name: 'Madrid', timezone: 'Europe/Madrid' },
+                    { name: 'Barcelona', timezone: 'Europe/Madrid' },
+                    { name: 'Valencia', timezone: 'Europe/Madrid' },
+                    { name: 'Seville', timezone: 'Europe/Madrid' },
+                    { name: 'Zaragoza', timezone: 'Europe/Madrid' }
+                ] 
+            },
+            'TR': { 
+                name: 'Turkey', 
+                cities: [
+                    { name: 'Istanbul', timezone: 'Europe/Istanbul' },
+                    { name: 'Ankara', timezone: 'Europe/Istanbul' },
+                    { name: 'Izmir', timezone: 'Europe/Istanbul' },
+                    { name: 'Bursa', timezone: 'Europe/Istanbul' },
+                    { name: 'Antalya', timezone: 'Europe/Istanbul' }
+                ] 
+            },
+            'JP': { 
+                name: 'Japan', 
+                cities: [
+                    { name: 'Tokyo', timezone: 'Asia/Tokyo' },
+                    { name: 'Yokohama', timezone: 'Asia/Tokyo' },
+                    { name: 'Osaka', timezone: 'Asia/Tokyo' },
+                    { name: 'Nagoya', timezone: 'Asia/Tokyo' },
+                    { name: 'Sapporo', timezone: 'Asia/Tokyo' }
+                ] 
+            },
+            'CN': { 
+                name: 'China', 
+                cities: [
+                    { name: 'Beijing', timezone: 'Asia/Shanghai' },
+                    { name: 'Shanghai', timezone: 'Asia/Shanghai' },
+                    { name: 'Guangzhou', timezone: 'Asia/Shanghai' },
+                    { name: 'Shenzhen', timezone: 'Asia/Shanghai' },
+                    { name: 'Chengdu', timezone: 'Asia/Shanghai' }
+                ] 
+            },
+            'IN': { 
+                name: 'India', 
+                cities: [
+                    { name: 'Mumbai', timezone: 'Asia/Kolkata' },
+                    { name: 'Delhi', timezone: 'Asia/Kolkata' },
+                    { name: 'Bangalore', timezone: 'Asia/Kolkata' },
+                    { name: 'Hyderabad', timezone: 'Asia/Kolkata' },
+                    { name: 'Ahmedabad', timezone: 'Asia/Kolkata' }
+                ] 
+            },
+            'BR': { 
+                name: 'Brazil', 
+                cities: [
+                    { name: 'São Paulo', timezone: 'America/Sao_Paulo' },
+                    { name: 'Rio de Janeiro', timezone: 'America/Sao_Paulo' },
+                    { name: 'Brasília', timezone: 'America/Sao_Paulo' },
+                    { name: 'Salvador', timezone: 'America/Bahia' },
+                    { name: 'Fortaleza', timezone: 'America/Fortaleza' }
+                ] 
+            },
+            'RU': { 
+                name: 'Russia', 
+                cities: [
+                    { name: 'Moscow', timezone: 'Europe/Moscow' },
+                    { name: 'Saint Petersburg', timezone: 'Europe/Moscow' },
+                    { name: 'Novosibirsk', timezone: 'Asia/Novosibirsk' },
+                    { name: 'Yekaterinburg', timezone: 'Asia/Yekaterinburg' },
+                    { name: 'Kazan', timezone: 'Europe/Moscow' }
+                ] 
+            },
+            'CA': { 
+                name: 'Canada', 
+                cities: [
+                    { name: 'Toronto', timezone: 'America/Toronto' },
+                    { name: 'Montreal', timezone: 'America/Toronto' },
+                    { name: 'Vancouver', timezone: 'America/Vancouver' },
+                    { name: 'Calgary', timezone: 'America/Edmonton' },
+                    { name: 'Ottawa', timezone: 'America/Toronto' }
+                ] 
+            },
+            'AU': { 
+                name: 'Australia', 
+                cities: [
+                    { name: 'Sydney', timezone: 'Australia/Sydney' },
+                    { name: 'Melbourne', timezone: 'Australia/Melbourne' },
+                    { name: 'Brisbane', timezone: 'Australia/Brisbane' },
+                    { name: 'Perth', timezone: 'Australia/Perth' },
+                    { name: 'Adelaide', timezone: 'Australia/Adelaide' }
+                ] 
+            },
+            'ZA': { 
+                name: 'South Africa', 
+                cities: [
+                    { name: 'Johannesburg', timezone: 'Africa/Johannesburg' },
+                    { name: 'Cape Town', timezone: 'Africa/Johannesburg' },
+                    { name: 'Durban', timezone: 'Africa/Johannesburg' },
+                    { name: 'Pretoria', timezone: 'Africa/Johannesburg' },
+                    { name: 'Port Elizabeth', timezone: 'Africa/Johannesburg' }
+                ] 
+            },
+            'MX': { 
+                name: 'Mexico', 
+                cities: [
+                    { name: 'Mexico City', timezone: 'America/Mexico_City' },
+                    { name: 'Guadalajara', timezone: 'America/Mexico_City' },
+                    { name: 'Monterrey', timezone: 'America/Monterrey' },
+                    { name: 'Puebla', timezone: 'America/Mexico_City' },
+                    { name: 'Tijuana', timezone: 'America/Tijuana' }
+                ] 
+            }
+        };
+
+        // Populate country select
+        function populateCountries() {
+            countrySelect.innerHTML = '<option value="">' + (currentLanguage === 'en' ? 'Select a country' : 'Bir ülke seçin') + '</option>';
+            
+            Object.keys(citiesData).forEach(countryCode => {
+                const option = document.createElement('option');
+                option.value = countryCode;
+                option.textContent = citiesData[countryCode].name;
+                countrySelect.appendChild(option);
+            });
+        }
+
+        // Country select change event
+        countrySelect.addEventListener('change', function() {
+            const country = this.value;
+            citySelect.innerHTML = '<option value="">' + (currentLanguage === 'en' ? 'Select a city' : 'Bir şehir seçin') + '</option>';
+            
+            if (country && citiesData[country]) {
+                citiesData[country].cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.name;
+                    option.textContent = city.name;
+                    option.setAttribute('data-timezone', city.timezone);
+                    citySelect.appendChild(option);
+                });
+            }
+        });
+
+        // YouTube button
+        youtubeBtn.addEventListener('click', () => {
+            window.open('https://www.youtube.com/@mtechnow', '_blank');
+        });
+        
+        // Location permission
+        allowBtn.addEventListener('click', getLocation);
+        retryBtn.addEventListener('click', getLocation);
+        
+        // Manual location selection
+        denyBtn.addEventListener('click', () => {
+            permissionScreen.classList.add('hidden');
+            manualLocationScreen.classList.remove('hidden');
+            populateCountries();
+        });
+        
+        manualSetupBtn.addEventListener('click', () => {
+            errorScreen.classList.add('hidden');
+            manualLocationScreen.classList.remove('hidden');
+            populateCountries();
+        });
+        
+        // Change location
+        changeLocationBtn.addEventListener('click', () => {
+            mainScreen.classList.add('hidden');
+            manualLocationScreen.classList.remove('hidden');
+            populateCountries();
+        });
+        
+        // Back buttons
+        cancelBtn.addEventListener('click', () => {
+            manualLocationScreen.classList.add('hidden');
+            permissionScreen.classList.remove('hidden');
+        });
+        
+        // Save location
+        saveLocationBtn.addEventListener('click', () => {
+            const country = countrySelect.value;
+            const city = citySelect.value;
+            const timezone = citySelect.options[citySelect.selectedIndex].getAttribute('data-timezone');
+            
+            if (!country || !city) {
+                alert(currentLanguage === 'en' ? 'Please select a country and city.' : 'Lütfen bir ülke ve şehir seçin.');
+                return;
+            }
+            
+            // Save location and go to main screen
+            manualLocationScreen.classList.add('hidden');
+            mainScreen.classList.remove('hidden');
+            
+            // Update time
+            updateTime(city, citiesData[country].name, timezone);
+            updateOtherCities();
+            
+            // Create analog clock
+            createAnalogClock();
+        });
+        
+        // Refresh button
+        refreshBtn.addEventListener('click', () => {
+            // Refresh time using current location info
+            const currentLocation = locationText.textContent;
+            if (currentLocation && currentLocation !== (currentLanguage === 'en' ? 'Loading your location...' : 'Konumunuz yükleniyor...')) {
+                updateTime();
+            }
+        });
+        
+        // Get location function
+        function getLocation() {
+            if (navigator.geolocation) {
+                permissionScreen.classList.add('hidden');
+                mainScreen.classList.remove('hidden');
+                
+                navigator.geolocation.getCurrentPosition(
+                    // Success
+                    async (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // Get location name using API
+                        await getLocationName(latitude, longitude);
+                        updateTime();
+                        updateOtherCities();
+                        
+                        // Create analog clock
+                        createAnalogClock();
+                    },
+                    // Error
+                    (error) => {
+                        mainScreen.classList.add('hidden');
+                        errorScreen.classList.remove('hidden');
+                        console.error('Location not available:', error);
+                    }
+                );
+            } else {
+                alert(currentLanguage === 'en' ? "Your browser doesn't support location services." : "Tarayıcınız konum bilgisini desteklemiyor.");
+            }
+        }
+        
+        // Get location name using API
+        async function getLocationName(lat, lng) {
+            try {
+                const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+                const data = await response.json();
+                
+                if (data.city && data.countryName) {
+                    locationText.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.city}, ${data.countryName}`;
+                } else {
+                    // Fallback if API doesn't return city/country
+                    locationText.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+                }
+            } catch (error) {
+                console.error('Error fetching location:', error);
+                // Fallback to coordinates if API fails
+                locationText.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+            }
+        }
+        
+        // Update time
+        function updateTime(city, country, timezone) {
+            const now = new Date();
+            
+            // Date format based on language
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            
+            dateText.textContent = now.toLocaleDateString(
+                currentLanguage === 'en' ? 'en-US' : 'tr-TR', 
+                dateOptions
+            );
+            
+            // Time format
+            function updateClock() {
+                const now = new Date();
+                timeText.textContent = now.toLocaleTimeString(
+                    currentLanguage === 'en' ? 'en-US' : 'tr-TR'
+                );
+                
+                // Update analog clock
+                updateAnalogClock(now);
+            }
+            
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Location info
+            if (city && country) {
+                locationText.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${city}, ${country}`;
+            }
+        }
+        
+        // Create analog clock
+        function createAnalogClock() {
+            analogClock.innerHTML = '';
+            
+            // Add hour marks
+            for (let i = 1; i <= 12; i++) {
+                const mark = document.createElement('div');
+                mark.className = 'clock-mark clock-mark-hour';
+                mark.style.transform = `rotate(${i * 30}deg) translateY(-100px)`;
+                analogClock.appendChild(mark);
+            }
+            
+            // Add minute marks
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) {
+                    const mark = document.createElement('div');
+                    mark.className = 'clock-mark clock-mark-minute';
+                    mark.style.transform = `rotate(${i * 6}deg) translateY(-105px)`;
+                    analogClock.appendChild(mark);
+                }
+            }
+            
+            // Add clock hands
+            const hourHand = document.createElement('div');
+            hourHand.className = 'hour-hand';
+            analogClock.appendChild(hourHand);
+            
+            const minuteHand = document.createElement('div');
+            minuteHand.className = 'minute-hand';
+            analogClock.appendChild(minuteHand);
+            
+            const secondHand = document.createElement('div');
+            secondHand.className = 'second-hand';
+            analogClock.appendChild(secondHand);
+            
+            // Clock center
+            const clockCenter = document.createElement('div');
+            clockCenter.className = 'clock-center';
+            analogClock.appendChild(clockCenter);
+        }
+        
+        // Update analog clock
+        function updateAnalogClock(now) {
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            const hourDeg = (hours * 30) + (minutes * 0.5);
+            const minuteDeg = (minutes * 6) + (seconds * 0.1);
+            const secondDeg = seconds * 6;
+            
+            const hourHand = document.querySelector('.hour-hand');
+            const minuteHand = document.querySelector('.minute-hand');
+            const secondHand = document.querySelector('.second-hand');
+            
+            if (hourHand) {
+                hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            }
+            if (minuteHand) {
+                minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            }
+            if (secondHand) {
+                secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+            }
+        }
+        
+        // Update other cities
+        function updateOtherCities() {
+            otherCities.innerHTML = '';
+            
+            // Select 6 random cities
+            const allCities = [];
+            Object.keys(citiesData).forEach(country => {
+                citiesData[country].cities.forEach(city => {
+                    allCities.push({ 
+                        city: city.name, 
+                        country: citiesData[country].name,
+                        timezone: city.timezone
+                    });
+                });
+            });
+            
+            // Shuffle and select 6 cities
+            const shuffled = allCities.sort(() => 0.5 - Math.random());
+            const selectedCities = shuffled.slice(0, 6);
+            
+            // Create city cards
+            selectedCities.forEach(({ city, country, timezone }) => {
+                const cityCard = document.createElement('div');
+                cityCard.className = 'city-card';
+                
+                cityCard.innerHTML = `
+                    <div class="city-name">${city}, ${country}</div>
+                    <div class="city-time">${formatTimeWithTimezone(timezone)}</div>
+                `;
+                
+                otherCities.appendChild(cityCard);
+            });
+        }
+        
+        // Format time with timezone
+        function formatTimeWithTimezone(timezone) {
+            try {
+                const now = new Date();
+                const formatter = new Intl.DateTimeFormat(currentLanguage === 'en' ? 'en-US' : 'tr-TR', {
+                    timeZone: timezone,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: currentLanguage === 'en'
+                });
+                return formatter.format(now);
+            } catch (e) {
+                return '--:--';
+            }
+        }
+        
+        // Initialize the app
+        window.addEventListener('load', () => {
+            permissionScreen.classList.remove('hidden');
+            populateCountries();
+        });
+    </script>
+</body>
+</html>
