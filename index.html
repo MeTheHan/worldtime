@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldTime - Global Clocks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-youtube {
+            background: #FF0000;
+            color: white;
+        }
+
+        .btn-youtube:hover {
+            background: #CC0000;
+            transform: scale(1.05);
+        }
+
+        .time-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .date-display {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .location-display {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .digital-clock {
+            font-size: 2rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .other-cities {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .city-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .city-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .city-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .city-time {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .settings-content {
+            background: linear-gradient(135deg, #2d1b69, #1a2a6c);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .settings-header h2 {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .settings-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .settings-option label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .settings-option select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .settings-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .settings-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        select option {
+            background: #2d1b69;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .time-display {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .flex-center {
+                flex-direction: column;
+            }
+            
+            .settings-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="settings-btn" id="settingsBtn">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <div class="container">
+        <!-- Permission Screen -->
+        <div class="card" id="permissionScreen">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <h1 id="appTitle">WorldTime</h1>
+            <p class="subtitle" id="appSubtitle">Global time at your fingertips</p>
+            
+            <div class="card">
+                <h2 id="permissionTitle">Location Access</h2>
+                <p id="permissionText">Allow WorldTime to access your location for accurate local time.</p>
+                
+                <div class="flex-center">
+                    <button class="btn btn-primary" id="allowBtn">
+                        <i class="fas fa-check-circle"></i> <span id="allowText">Allow Access</span>
+                    </button>
+                    <button class="btn btn-secondary" id="manualBtn">
+                        <i class="fas fa-map-marker-alt"></i> <span id="manualText">Manual Entry</span>
+                    </button>
+                </div>
+                
+                <div class="flex-center" style="margin-top:15px">
+                    <button class="btn btn-youtube" id="youtubeBtn">
+                        <i class="fab fa-youtube"></i> <span id="youtubeText">Subscribe @mtechnow</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Screen -->
+        <div class="card hidden" id="mainScreen">
+            <div class="logo">
+                <i class="fas fa-globe-americas"></i>
+            </div>
+            <h1 id="mainTitle">WorldTime</h1>
+            <p class="subtitle" id="mainSubtitle">Real-time global clocks</p>
+            
+            <div class="location-display">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="locationText">Detecting your location...</span>
+            </div>
+            
+            <div class="date-display" id="dateText"></div>
+            <div class="time-display" id="timeText">00:00:00</div>
+            
+            <div class="clock-container">
+                <div class="digital-clock" id="digitalClock">00:00:00</div>
+            </div>
+            
+            <div class="flex-center">
+                <button class="btn btn-secondary" id="changeLocationBtn">
+                    <i class="fas fa-map-marked-alt"></i> <span id="changeLocationText">Change Location</span>
+                </button>
+                <button class="btn btn-primary" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> <span id="refreshText">Refresh</span>
+                </button>
+            </div>
+            
+            <h3 style="margin:20px 0 10px" id="otherCitiesTitle">World Clocks</h3>
+            <div class="other-cities" id="otherCities"></div>
+        </div>
+
+        <!-- Manual Location Screen -->
+        <div class="card hidden" id="manualScreen">
+            <h2 id="manualTitle">Select Location</h2>
+            <p id="manualSubtitle">Choose a city to display its local time</p>
+            
+            <select id="timezoneSelect">
+                <option value="">Select a timezone</option>
+                <option value="Europe/Istanbul">Istanbul, Turkey</option>
+                <option value="America/New_York">New York, USA</option>
+                <option value="Europe/London">London, UK</option>
+                <option value="Asia/Tokyo">Tokyo, Japan</option>
+                <option value="Australia/Sydney">Sydney, Australia</option>
+                <option value="Europe/Paris">Paris, France</option>
+                <option value="Europe/Berlin">Berlin, Germany</option>
+                <option value="Asia/Dubai">Dubai, UAE</option>
+                <option value="Asia/Singapore">Singapore</option>
+                <option value="America/Los_Angeles">Los Angeles, USA</option>
+            </select>
+            
+            <div class="flex-center">
+                <button class="btn btn-primary" id="setLocationBtn">
+                    <i class="fas fa-check"></i> <span id="setLocationText">Set Location</span>
+                </button>
+                <button class="btn btn-secondary" id="backBtn">
+                    <i class="fas fa-arrow-left"></i> <span id="backText">Back</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p id="footerText">WorldTime &copy; 2025 - All rights reserved</p>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="settings-modal hidden" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2><i class="fas fa-cog"></i> <span id="settingsTitle">Settings</span></h2>
+                <button class="close-settings" id="closeSettings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="settings-option">
+                <label for="languageSelect"><i class="fas fa-language"></i> <span id="languageLabel">Language</span></label>
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </div>
+            
+            <div class="settings-option">
+                <label for="timeFormat"><i class="fas fa-clock"></i> <span id="timeFormatLabel">Time Format</span></label>
+                <select id="timeFormat">
+                    <option value="24">24-hour format</option>
+                    <option value="12">12-hour format</option>
+                </select>
+            </div>
+            
+            <div class="settings-actions">
+                <button class="btn btn-primary" id="saveSettings">
+                    <i class="fas fa-save"></i> <span id="saveText">Save</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const permissionScreen = document.getElementById('permissionScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const manualScreen = document.getElementById('manualScreen');
+        const settingsModal = document.getElementById('settingsModal');
+        
+        const allowBtn = document.getElementById('allowBtn');
+        const manualBtn = document.getElementById('manualBtn');
+        const youtubeBtn = document.getElementById('youtubeBtn');
+        const changeLocationBtn = document.getElementById('changeLocationBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const setLocationBtn = document.getElementById('setLocationBtn');
+        const backBtn = document.getElementById('backBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettings = document.getElementById('closeSettings');
+        const saveSettings = document.getElementById('saveSettings');
+        
+        const locationText = document.getElementById('locationText');
+        const dateText = document.getElementById('dateText');
+        const timeText = document.getElementById('timeText');
+        const digitalClock = document.getElementById('digitalClock');
+        const otherCities = document.getElementById('otherCities');
+        const timezoneSelect = document.getElementById('timezoneSelect');
+        const languageSelect = document.getElementById('languageSelect');
+        const timeFormat = document.getElementById('timeFormat');
+        
+        // Language texts
+        const translations = {
+            en: {
+                appTitle: "WorldTime",
+                appSubtitle: "Global time at your fingertips",
+                permissionTitle: "Location Access",
+                permissionText: "Allow WorldTime to access your location for accurate local time.",
+                allowText: "Allow Access",
+                manualText: "Manual Entry",
+                youtubeText: "Subscribe @mtechnow",
+                mainTitle: "WorldTime",
+                mainSubtitle: "Real-time global clocks",
+                locationLoading: "Detecting your location...",
+                changeLocationText: "Change Location",
+                refreshText: "Refresh",
+                otherCitiesTitle: "World Clocks",
+                manualTitle: "Select Location",
+                manualSubtitle: "Choose a city to display its local time",
+                setLocationText: "Set Location",
+                backText: "Back",
+                footerText: "WorldTime &copy; 2025 - All rights reserved",
+                settingsTitle: "Settings",
+                languageLabel: "Language",
+                timeFormatLabel: "Time Format",
+                saveText: "Save"
+            },
+            tr: {
+                appTitle: "WorldTime",
+                appSubtitle: "Küresel saat bilgisi parmaklarınızın ucunda",
+                permissionTitle: "Konum Erişimi",
+                permissionText: "WorldTime'ın doğru yerel saat bilgisi için konumunuza erişmesine izin verin.",
+                allowText: "Erişime İzin Ver",
+                manualText: "Manuel Giriş",
+                youtubeText: "@mtechnow'a Abone Ol",
+                mainTitle: "WorldTime",
+                mainSubtitle: "Gerçek zamanlı küresel saatler",
+                locationLoading: "Konumunuz tespit ediliyor...",
+                changeLocationText: "Konumu Değiştir",
+                refreshText: "Yenile",
+                otherCitiesTitle: "Dünya Saatleri",
+                manualTitle: "Konum Seçin",
+                manualSubtitle: "Yerel saatini görmek için bir şehir seçin",
+                setLocationText: "Konumu Ayarla",
+                backText: "Geri",
+                footerText: "WorldTime &copy; 2025 - Tüm hakları saklıdır",
+                settingsTitle: "Ayarlar",
+                languageLabel: "Dil",
+                timeFormatLabel: "Saat Formatı",
+                saveText: "Kaydet"
+            }
+        };
+
+        // App State
+        let currentTimezone = 'Europe/Istanbul';
+        let currentLanguage = 'en';
+        let currentTimeFormat = '24';
+        
+        // Initialize
+        function init() {
+            loadSettings();
+            setupEventListeners();
+            applyTranslations(currentLanguage);
+            permissionScreen.classList.remove('hidden');
+        }
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            if (localStorage.getItem('worldTimeLanguage')) {
+                currentLanguage = localStorage.getItem('worldTimeLanguage');
+                languageSelect.value = currentLanguage;
+            }
+            
+            if (localStorage.getItem('worldTimeTimezone')) {
+                currentTimezone = localStorage.getItem('worldTimeTimezone');
+                timezoneSelect.value = currentTimezone;
+            }
+            
+            if (localStorage.getItem('worldTimeFormat')) {
+                currentTimeFormat = localStorage.getItem('worldTimeFormat');
+                timeFormat.value = currentTimeFormat;
+            }
+        }
+        
+        // Apply translations
+        function applyTranslations(lang) {
+            const texts = translations[lang];
+            document.getElementById('appTitle').textContent = texts.appTitle;
+            document.getElementById('appSubtitle').textContent = texts.appSubtitle;
+            document.getElementById('permissionTitle').textContent = texts.permissionTitle;
+            document.getElementById('permissionText').textContent = texts.permissionText;
+            document.getElementById('allowText').textContent = texts.allowText;
+            document.getElementById('manualText').textContent = texts.manualText;
+            document.getElementById('youtubeText').textContent = texts.youtubeText;
+            document.getElementById('mainTitle').textContent = texts.mainTitle;
+            document.getElementById('mainSubtitle').textContent = texts.mainSubtitle;
+            document.getElementById('locationText').textContent = texts.locationLoading;
+            document.getElementById('changeLocationText').textContent = texts.changeLocationText;
+            document.getElementById('refreshText').textContent = texts.refreshText;
+            document.getElementById('otherCitiesTitle').textContent = texts.otherCitiesTitle;
+            document.getElementById('manualTitle').textContent = texts.manualTitle;
+            document.getElementById('manualSubtitle').textContent = texts.manualSubtitle;
+            document.getElementById('setLocationText').textContent = texts.setLocationText;
+            document.getElementById('backText').textContent = texts.backText;
+            document.getElementById('footerText').textContent = texts.footerText;
+            document.getElementById('settingsTitle').textContent = texts.settingsTitle;
+            document.getElementById('languageLabel').textContent = texts.languageLabel;
+            document.getElementById('timeFormatLabel').textContent = texts.timeFormatLabel;
+            document.getElementById('saveText').textContent = texts.saveText;
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            allowBtn.addEventListener('click', getLocation);
+            manualBtn.addEventListener('click', () => showScreen(manualScreen));
+            youtubeBtn.addEventListener('click', () => window.open('https://youtube.com/@mtechnow', '_blank'));
+            changeLocationBtn.addEventListener('click', () => showScreen(manualScreen));
+            refreshBtn.addEventListener('click', updateAllTimes);
+            setLocationBtn.addEventListener('click', setManualLocation);
+            backBtn.addEventListener('click', () => showScreen(permissionScreen));
+            
+            // Settings
+            settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+            closeSettings.addEventListener('click', () => settingsModal.classList.add('hidden'));
+            saveSettings.addEventListener('click', saveAllSettings);
+            
+            // Close modal when clicking outside
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target === settingsModal) settingsModal.classList.add('hidden');
+            });
+        }
+        
+        // Show specific screen
+        function showScreen(screen) {
+            [permissionScreen, mainScreen, manualScreen].forEach(s => s.classList.add('hidden'));
+            screen.classList.remove('hidden');
+        }
+        
+        // Get user location
+        function getLocation() {
+            if (!navigator.geolocation) {
+                alert(currentLanguage === 'en' ? "Geolocation is not supported by your browser" : "Tarayıcınız konum bilgisini desteklemiyor");
+                return;
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    
+                    try {
+                        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=${currentLanguage}`);
+                        const data = await response.json();
+                        
+                        if (data.city && data.countryName) {
+                            locationText.textContent = `${data.city}, ${data.countryName}`;
+                        } else {
+                            locationText.textContent = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
+                        }
+                        
+                    } catch (error) {
+                        console.error("Error getting location data:", error);
+                        locationText.textContent = currentLanguage === 'en' ? "Unknown Location" : "Bilinmeyen Konum";
+                    }
+                    
+                    showScreen(mainScreen);
+                    updateAllTimes();
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    alert(currentLanguage === 'en' ? "Could not get your location. Please set it manually." : "Konumunuz alınamadı. Lütfen manuel olarak ayarlayın.");
+                    showScreen(manualScreen);
+                }
+            );
+        }
+        
+        // Set manual location
+        function setManualLocation() {
+            const selectedTimezone = timezoneSelect.value;
+            if (!selectedTimezone) {
+                alert(currentLanguage === 'en' ? "Please select a timezone" : "Lütfen bir zaman dilimi seçin");
+                return;
+            }
+            
+            currentTimezone = selectedTimezone;
+            localStorage.setItem('worldTimeTimezone', currentTimezone);
+            
+            const locationName = timezoneSelect.options[timezoneSelect.selectedIndex].text;
+            locationText.textContent = locationName;
+            
+            showScreen(mainScreen);
+            updateAllTimes();
+        }
+        
+        // Update all time displays
+        function updateAllTimes() {
+            updateCurrentTime();
+            updateWorldClocks();
+        }
+        
+        // Update current time display
+        function updateCurrentTime() {
+            const now = new Date();
+            
+            // Format time based on user preference
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: currentTimeFormat === '12'
+            };
+            
+            const timeString = now.toLocaleTimeString(currentLanguage === 'en' ? 'en-US' : 'tr-TR', timeOptions);
+            timeText.textContent = timeString;
+            digitalClock.textContent = timeString;
+            
+            // Format date
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            
+            dateText.textContent = now.toLocaleDateString(currentLanguage === 'en' ? 'en-US' : 'tr-TR', dateOptions);
+        }
+        
+        // Update world clocks
+        function updateWorldClocks() {
+            const cities = [
+                { name: "New York", timezone: "America/New_York" },
+                { name: "London", timezone: "Europe/London" },
+                { name: "Tokyo", timezone: "Asia/Tokyo" },
+                { name: "Sydney", timezone: "Australia/Sydney" },
+                { name: "Paris", timezone: "Europe/Paris" },
+                { name: "Dubai", timezone: "Asia/Dubai" }
+            ];
+            
+            otherCities.innerHTML = '';
+            
+            cities.forEach(city => {
+                const now = new Date();
+                const timeOptions = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: currentTimeFormat === '12'
+                };
+                
+                // Simple timezone offset simulation
+                let offset = 0;
+                switch(city.timezone) {
+                    case 'America/New_York': offset = -5; break;
+                    case 'Europe/London': offset = 0; break;
+                    case 'Asia/Tokyo': offset = 9; break;
+                    case 'Australia/Sydney': offset = 11; break;
+                    case 'Europe/Paris': offset = 1; break;
+                    case 'Asia/Dubai': offset = 4; break;
+                }
+                
+                const cityTime = new Date(now.getTime() + (offset * 60 * 60 * 1000));
+                const timeString = cityTime.toLocaleTimeString(currentLanguage === 'en' ? 'en-US' : 'tr-TR', timeOptions);
+                
+                const cityCard = document.createElement('div');
+                cityCard.className = 'city-card';
+                cityCard.innerHTML = `
+                    <div class="city-name">${city.name}</div>
+                    <div class="city-time">${timeString}</div>
+                `;
+                
+                otherCities.appendChild(cityCard);
+            });
+        }
+        
+        // Save all settings
+        function saveAllSettings() {
+            currentLanguage = languageSelect.value;
+            currentTimeFormat = timeFormat.value;
+            
+            localStorage.setItem('worldTimeLanguage', currentLanguage);
+            localStorage.setItem('worldTimeFormat', currentTimeFormat);
+            
+            applyTranslations(currentLanguage);
+            updateAllTimes();
+            
+            settingsModal.classList.add('hidden');
+            
+            // Show confirmation
+            alert(currentLanguage === 'en' ? 'Settings saved successfully!' : 'Ayarlar başarıyla kaydedildi!');
+        }
+        
+        // Start the app
+        init();
+        
+        // Update time every second
+        setInterval(updateAllTimes, 1000);
+    </script>
+</body>
+</html>
